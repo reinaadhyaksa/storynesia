@@ -1,0 +1,91 @@
+{
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "name": "Storynesia - Dunia Cerita & Novel AI Tanpa Batas",
+  "short_name": "Storynesia",
+  "description": "Platform digital dengan koleksi cerita fiksi dan novel hasil kreasi kecerdasan buatan (AI). Jelajahi dunia imajinasi tanpa akhir dengan berbagai genre menarik.",
+  "display": "standalone",
+  "background_color": "#fef3c7",
+  "theme_color": "#d97706",
+  "categories": [
+    "books",
+    "entertainment",
+    "education"
+  ],
+  "lang": "id",
+  "dir": "ltr",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/storynesia-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/storynesia-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop/storynesia-beranda.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Halaman Beranda Storynesia"
+    },
+    {
+      "src": "/screenshots/desktop/storynesia-tentang.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Halaman Tentang Kami"
+    },
+    {
+      "src": "/screenshots/desktop/storynesia-genre.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Jelajahi Berbagai Genre Cerita"
+    },
+    {
+      "src": "/screenshots/desktop/storynesia-koleksi.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Koleksi Lengkap Cerita AI"
+    },
+    {
+      "src": "/screenshots/mobile/storynesia-beranda.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Halaman Beranda Storynesia"
+    },
+    {
+      "src": "/screenshots/mobile/storynesia-tentang.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Halaman Tentang Kami"
+    },
+    {
+      "src": "/screenshots/mobile/storynesia-genre.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Jelajahi Berbagai Genre Cerita"
+    },
+    {
+      "src": "/screenshots/mobile/storynesia-koleksi.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Koleksi Lengkap Cerita AI"
+    }
+  ]
+}

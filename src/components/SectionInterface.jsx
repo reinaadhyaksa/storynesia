@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { getAvailableGenres } from '../utils/categoryUtils';
 import { SectionHeader, ButtonViewAll } from './Template';
@@ -14,7 +14,7 @@ export const Hero = ({ books }) => {
     };
 
     return (
-        <section className="bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 pt-24 pb-20 text-white">
+        <section className="bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 min-h-screen flex items-center pt-24 pb-20 text-white">
             <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
                 <div className="md:w-1/2 mb-10 md:mb-0" data-aos="fade-right">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -71,12 +71,12 @@ export const Hero = ({ books }) => {
 
 export const About = () => {
     return (
-        <section className="py-16 bg-gradient-to-b from-white to-purple-50">
+        <section className="min-h-screen py-16 bg-gradient-to-b from-white to-purple-50 flex items-center">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row items-center">
                     <div className="md:w-1/2 mb-10 md:mb-0" data-aos="fade-right">
                         <h2 className="text-3xl font-bold mb-6">
-                            Tentang <span className="text-purple-600"> Storynesia</span>
+                            Tentang <span className="text-purple-600">Storynesia</span>
                         </h2>
                         <p className="text-gray-700 mb-4">
                             Storynesia adalah platform revolusioner yang menggunakan kecerdasan buatan untuk menciptakan
@@ -180,7 +180,7 @@ export const FeaturedCollection = ({ books }) => {
     const recommendedBooks = books.filter(book => book.recomendations === true);
 
     return (
-        <section id="collection" className="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <section id="collection" className="bg-gradient-to-b from-gray-50 to-white min-h-screen flex items-center py-16">
             <div className="container mx-auto px-4">
                 <SectionHeader
                     title={"Dunia Baru Menanti"}
@@ -212,7 +212,7 @@ export const FeaturedCategories = ({ books }) => {
     const topGenres = sortedGenres.slice(0, 4);
 
     return (
-        <section className="bg-white mb-10">
+        <section className="bg-white min-h-screen flex items-center py-16">
             <div className="container mx-auto px-4">
                 <SectionHeader
                     title={"Temukan Genre Favoritmu"}
@@ -243,7 +243,7 @@ export const LatestCollection = ({ books }) => {
         .slice(0, 4);
 
     return (
-        <section id="latest-collection" className=" bg-gradient-to-b from-white to-gray-50">
+        <section id="latest-collection" className="bg-gradient-to-b from-white to-gray-50 min-h-screen flex items-center py-16">
             <div className="container mx-auto px-4">
                 <SectionHeader
                     title={"Karya Terbaru AI"}

@@ -6,23 +6,75 @@ import { BookRecomendations, LoadingSpinner, NavbarStory, Notification, ShareBut
 import { NotFoundChapter } from './NotFound'
 import { OptimizedImage } from '../utils/imageOptimizer'
 import Footer from '../components/Footer'
-import { Helmet } from 'react-helmet' 
+import { Helmet } from 'react-helmet'
 import ErrorBoundary from '../components/ErrorBoundary'
+import { supabase } from '../supabaseClient'
 
 const BookDetail = ({ books }) => {
     const { titleSlug } = useParams();
     const [loading, setLoading] = useState(true);
     const [showShareNotification, setShowShareNotification] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [favoriteId, setFavoriteId] = useState(null); 
+    const [user, setUser] = useState(null); 
     const book = useMemo(() => findBookBySlug(books, titleSlug), [books, titleSlug]);
 
     useEffect(() => {
-        if (book) {
-            setLoading(false);
-        } else {
-            setLoading(false);
+        const getSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setUser(session?.user ?? null);
+        };
+
+        getSession();
+
+        const { data: authListener } = supabase.auth.onAuthStateChange(
+            async (event, session) => {
+                setUser(session?.user ?? null);
+            }
+        );
+
+        return () => {
+            authListener?.subscription.unsubscribe();
+        };
+    }, []);
+
+    useEffect(() => {
+        const checkData = async () => {
+            if (book) {
+                if (user) {
+                    await checkIfFavorite();
+                }
+                setLoading(false);
+            } else {
+                setLoading(false);
+            }
+        };
+
+        checkData();
+    }, [book, user]);
+
+    const checkIfFavorite = async () => {
+        if (!user) return;
+
+        try {
+            const { data, error } = await supabase
+                .from('favorites')
+                .select('id')
+                .eq('user_id', user.id)
+                .eq('book_slug', encodeURIComponent(titleSlug))
+                .maybeSingle(); 
+            if (error && error.code !== 'PGRST116') { 
+                console.error('Error checking favorite:', error);
+                return;
+            }
+
+            setIsFavorite(!!data);
+            if (data) setFavoriteId(data.id);
+        } catch (error) {
+            console.error('Error checking favorite:', error);
         }
-    }, [book]);
+    };
 
     const imageOptions = {
         width: 800,
@@ -31,6 +83,53 @@ const BookDetail = ({ books }) => {
     };
 
     const sharePage = () => setShowShareModal(true);
+
+    const handleFavorite = async () => {
+        if (!user) {
+            alert('Silakan login terlebih dahulu untuk menambahkan favorit');
+            return;
+        }
+
+        try {
+            if (isFavorite) {
+                const { error } = await supabase
+                    .from('favorites')
+                    .delete()
+                    .eq('id', favoriteId);
+
+                if (error) {
+                    console.error('Error removing favorite:', error);
+                    alert('Gagal menghapus dari favorit');
+                    return;
+                }
+
+                setIsFavorite(false);
+                setFavoriteId(null);
+            } else {
+                const { data, error } = await supabase
+                    .from('favorites')
+                    .insert({
+                        user_id: user.id,
+                        book_slug: titleSlug,
+                        book_data: book
+                    })
+                    .select()
+                    .single();
+
+                if (error) {
+                    console.error('Error adding favorite:', error);
+                    alert('Gagal menambahkan ke favorit');
+                    return;
+                }
+
+                setIsFavorite(true);
+                setFavoriteId(data.id);
+            }
+        } catch (error) {
+            console.error('Error handling favorite:', error);
+            alert('Terjadi kesalahan saat memproses favorit');
+        }
+    };
 
     const handleSocialShare = (platform) => {
         const currentUrl = encodeURIComponent(window.location.href);
@@ -157,6 +256,24 @@ const BookDetail = ({ books }) => {
                                         <Icon icon="fa6-solid:robot" className="w-4 h-4 mr-1" />
                                         Karya Kecerdasan Buatan
                                     </span>
+                                </div>
+
+                                <div className="mt-4 flex justify-center">
+                                    <button
+                                        onClick={handleFavorite}
+                                        className={`flex items-center justify-center px-4 py-2 rounded-lg transition-colors ${isFavorite
+                                            ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            }`}
+                                        disabled={!user} 
+                                    >
+                                        <Icon
+                                            icon={isFavorite ? "fa6-solid:heart" : "fa6-regular:heart"}
+                                            className="w-5 h-5 mr-2"
+                                        />
+                                        {!user ? 'Login untuk Favorit' :
+                                            isFavorite ? 'Favorit' : 'Tambahkan ke Favorit'}
+                                    </button>
                                 </div>
                             </div>
                             <div className="md:w-2/3">

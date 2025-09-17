@@ -1,60 +1,56 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import AOS from 'aos'
-import 'aos/dist/aos.css'
+import { useEffect, lazy, Suspense } from 'react'
 import Header from './components/Header'
-import Categories from './pages/Categories'
-import CategoryDetail from './pages/CategoryDetail'
-import BookDetail from './pages/BookDetail'
-import BookList from './pages/BookList'
-import ChapterReader from './pages/ChapterReader'
-import { HomePage } from './pages/Home'
-import { ScrollToTop, LoadingSpinner } from './components/Template'
+import { ScrollToTop } from './components/Template'
+import AuthProvider from './context/AuthContext'
+import { initializeAOS, useAppData } from './utils/appUtils'
+import { StorynesiaLoadingScreen } from './components/Template'
+import { NotFoundPage } from './pages/NotFound'
+
+const Categories = lazy(() => import('./pages/Categories'))
+const CategoryDetail = lazy(() => import('./pages/CategoryDetail'))
+const BookDetail = lazy(() => import('./pages/BookDetail'))
+const BookList = lazy(() => import('./pages/BookList'))
+const ChapterReader = lazy(() => import('./pages/ChapterReader'))
+const HomePage = lazy(() => import('./pages/Home'))
+const LoginPages = lazy(() => import('./pages/LoginPages'))
+const RegisterPages = lazy(() => import('./pages/RegisterPages'))
+const ProfilePage = lazy(() => import('./pages/ProfilePages'))
 
 function App() {
-  const [books, setBooks] = useState([])
-  const [loading, setLoading] = useState(true)
-
+  const { books, isLoading, loadBooksData } = useAppData()
   useEffect(() => {
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true
-    })
-
+    initializeAOS()
     loadBooksData()
   }, [])
 
-  const loadBooksData = async () => {
-    try {
-      const data = await import('./data/data.json')
-      setBooks(data.default)
-    } catch (error) {
-      console.error('Error loading data:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  if (loading) {
-    return <LoadingSpinner />
+  if (isLoading) {
+    return <StorynesiaLoadingScreen />
   }
 
   return (
-    <Router>
-      <div className="bg-gray-50 overflow-x-hidden">
-        <ScrollToTop />
-        <Header />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/kategori" element={<Categories books={books} />} />
-          <Route path="/kategori/:genreName" element={<CategoryDetail books={books} />} />
-          <Route path="/koleksi/:titleSlug" element={<BookDetail books={books} />} />
-          <Route path="/koleksi" element={<BookList books={books} />} />
-          <Route path="/koleksi/:titleSlug/chapter" element={<ChapterReader books={books} />} />
-        </Routes>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="bg-gray-50 overflow-x-hidden">
+          <ScrollToTop />
+          <Header />
+          <Suspense>
+            <Routes>
+              <Route path="/" element={<HomePage books={books} />} />
+              <Route path="/kategori" element={<Categories books={books} />} />
+              <Route path="/kategori/:genreName" element={<CategoryDetail books={books} />} />
+              <Route path="/koleksi/:titleSlug" element={<BookDetail books={books} />} />
+              <Route path="/koleksi" element={<BookList books={books} />} />
+              <Route path="/koleksi/:titleSlug/chapter" element={<ChapterReader books={books} />} />
+              <Route path="/masuk" element={<LoginPages />} />
+              <Route path="/daftar" element={<RegisterPages />} />
+              <Route path="/profil/:username" element={<ProfilePage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </div>
+      </Router>
+    </AuthProvider>
   )
 }
 

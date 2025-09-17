@@ -1,32 +1,15 @@
-import { 
-  Hero, 
-  About, 
-  FeaturedCategories, 
-  FeaturedCollection, 
-  LatestCollection 
+import {
+  Hero,
+  About,
+  FeaturedCategories,
+  FeaturedCollection,
+  LatestCollection
 } from "../components/SectionInterface"
-import { useState, useEffect } from "react"
-import { fetchBooksData } from "../utils/dataLoader"
 import Footer from "../components/Footer"
 import { Helmet } from "react-helmet"
 import ErrorBoundary from "../components/ErrorBoundary"
 
-export function HomePage() {
-  const [books, setBooks] = useState([])
-
-  useEffect(() => {
-    loadBooks()
-  }, [])
-
-  const loadBooks = async () => {
-    try {
-      const booksData = await fetchBooksData()
-      setBooks(booksData)
-    } catch (error) {
-      console.error('Error loading books:', error)
-    }
-  }
- 
+export default function HomePage({ books }) {
   return (
     <>
       <ErrorBoundary fallback={<div>Error in header</div>}>
@@ -42,7 +25,6 @@ export function HomePage() {
         <FeaturedCategories books={books} />
         <Footer />
       </ErrorBoundary>
-
     </>
   )
 }

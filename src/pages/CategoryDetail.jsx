@@ -6,6 +6,7 @@ import { getAvailableGenres } from '../utils/categoryUtils';
 import Footer from '../components/Footer';
 import { Helmet } from 'react-helmet'; 
 import ErrorBoundary from '../components/ErrorBoundary';
+import { GenreNotFound } from './NotFound';
 
 const CategoryDetail = ({ books }) => {
     const { genreName } = useParams();
@@ -25,15 +26,7 @@ const CategoryDetail = ({ books }) => {
                         <title>Genre Tidak Ditemukan (404) | Storynesia</title>
                         <meta name="robots" content="noindex, nofollow" />
                     </Helmet>
-                    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                        <div className="text-center">
-                            <h1 className="text-2xl font-bold text-gray-800 mb-2">Genre Tidak Ditemukan</h1>
-                            <p className="text-gray-600 mb-6">Genre yang Anda cari tidak tersedia.</p>
-                            <Link to="/kategori" className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                                Kembali ke Daftar Genre
-                            </Link>
-                        </div>
-                    </div>
+                    <GenreNotFound />
                     <Footer />
                 </ErrorBoundary>
             </>

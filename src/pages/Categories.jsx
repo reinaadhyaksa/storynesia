@@ -8,7 +8,6 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 const Categories = ({ books }) => {
     const availableGenres = useMemo(() => getAvailableGenres(books), [books]);
-
     return (
         <>
             <ErrorBoundary fallback={<div>Error in header</div>}>

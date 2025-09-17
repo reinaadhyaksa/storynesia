@@ -1,35 +1,13 @@
 import { Icon } from '@iconify/react'
 import { Link } from 'react-router-dom'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { usePWAInstall } from '../utils/components/header'
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [installStatus, setInstallStatus] = useState(null) // 'installing', 'success', 'error'
     const { user, profile } = useAuth()
     const { canInstall, handleInstallClick } = usePWAInstall()
-
-    // Timer untuk menghilangkan notifikasi
-    useEffect(() => {
-        if (installStatus === 'success' || installStatus === 'error') {
-            const timer = setTimeout(() => {
-                setInstallStatus(null)
-            }, 3000)
-            return () => clearTimeout(timer)
-        }
-    }, [installStatus])
-
-    const handleInstall = async () => {
-        setInstallStatus('installing')
-        try {
-            await handleInstallClick()
-            // Status success akan diatur oleh event listener di usePWAInstall
-        } catch (error) {
-            setInstallStatus('error')
-            console.error("Error installing app:", error)
-        }
-    }
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -44,32 +22,6 @@ const Header = () => {
 
     return (
         <header className="fixed w-full bg-purple-900 text-white shadow-lg z-50">
-            {/* Notifikasi Status Instalasi */}
-            {installStatus && (
-                <div className={`absolute top-full left-0 right-0 py-2 px-4 text-center ${installStatus === 'installing' ? 'bg-blue-600' :
-                        installStatus === 'success' ? 'bg-green-600' : 'bg-red-600'
-                    }`}>
-                    {installStatus === 'installing' && (
-                        <div className="flex items-center justify-center">
-                            <Icon icon="svg-spinners:90-ring-with-bg" className="mr-2" />
-                            <span>Sedang menginstal aplikasi...</span>
-                        </div>
-                    )}
-                    {installStatus === 'success' && (
-                        <div className="flex items-center justify-center">
-                            <Icon icon="fa6-solid:check" className="mr-2" />
-                            <span>Aplikasi berhasil diinstal!</span>
-                        </div>
-                    )}
-                    {installStatus === 'error' && (
-                        <div className="flex items-center justify-center">
-                            <Icon icon="fa6-solid:triangle-exclamation" className="mr-2" />
-                            <span>Gagal menginstal aplikasi</span>
-                        </div>
-                    )}
-                </div>
-            )}
-
             <div className="container mx-auto px-4 py-3 flex justify-between items-center">
                 <Link to={"/"} className="flex items-center">
                     <Icon icon="fa6-solid:book-open" className="text-2xl text-purple-300 mr-2" />
@@ -147,21 +99,11 @@ const Header = () => {
                         {canInstall && (
                             <li>
                                 <button
-                                    onClick={handleInstall}
+                                    onClick={handleInstallClick}
                                     className="bg-purple-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-purple-700 transition flex items-center"
-                                    disabled={installStatus === 'installing'}
                                 >
-                                    {installStatus === 'installing' ? (
-                                        <>
-                                            <Icon icon="svg-spinners:90-ring-with-bg" className="mr-1" />
-                                            Memproses...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Icon icon="fa6-solid:download" className="mr-1" />
-                                            Install App
-                                        </>
-                                    )}
+                                    <Icon icon="fa6-solid:download" className="mr-1" />
+                                    Install App
                                 </button>
                             </li>
                         )}
@@ -171,15 +113,10 @@ const Header = () => {
                 <div className="flex items-center">
                     {canInstall && (
                         <button
-                            onClick={handleInstall}
+                            onClick={handleInstallClick}
                             className="md:hidden bg-purple-600 text-white px-3 py-1 rounded-lg text-sm mr-3 hover:bg-purple-700 transition flex items-center"
-                            disabled={installStatus === 'installing'}
                         >
-                            {installStatus === 'installing' ? (
-                                <Icon icon="svg-spinners:90-ring-with-bg" className="text-lg" />
-                            ) : (
-                                <Icon icon="fa6-solid:download" className="text-lg" />
-                            )}
+                            <Icon icon="fa6-solid:download" className="text-lg" />
                         </button>
                     )}
 
@@ -274,23 +211,13 @@ const Header = () => {
                             <li>
                                 <button
                                     onClick={() => {
-                                        handleInstall()
+                                        handleInstallClick()
                                         setIsMenuOpen(false)
                                     }}
                                     className="bg-purple-600 text-white px-3 py-2 rounded-lg w-full text-sm hover:bg-purple-700 transition flex items-center justify-center"
-                                    disabled={installStatus === 'installing'}
                                 >
-                                    {installStatus === 'installing' ? (
-                                        <>
-                                            <Icon icon="svg-spinners:90-ring-with-bg" className="mr-2" />
-                                            Memproses...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Icon icon="fa6-solid:download" className="mr-2" />
-                                            Install App
-                                        </>
-                                    )}
+                                    <Icon icon="fa6-solid:download" className="mr-2" />
+                                    Install App
                                 </button>
                             </li>
                         )}
